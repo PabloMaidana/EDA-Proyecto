@@ -13,27 +13,26 @@ import java.util.Scanner;
 public class ArbolBinario {
     Jugador[] arbol;
     int tam;
-    int numRondas;
-    int numJugadores = 0;   
-    int cantMaximaJugadores;
+    int numRondas;  
+    int cantMaxJugadores;
+    int nivelActualArbol;
     
     public ArbolBinario(int nRondas) {
         this.numRondas = nRondas;
+        this.nivelActualArbol = nRondas;
         tam = (int) Math.pow(2,(nRondas + 1))-1;
         this.arbol = new Jugador[tam];
         for (int i = 0; i < tam; i++) {
             arbol[i] = new Jugador(false);
         }
-        this.cantMaximaJugadores = (int) Math.pow(2,numRondas);
-        System.out.println("Tam:" + tam );
-        System.out.println("Cantmax: " + cantMaximaJugadores);
-        System.out.println("numRondas: " + numRondas);
+        this.cantMaxJugadores = (int) Math.pow(2,numRondas);
     }
 
     public void insertarJugador(Jugador jugador){
-        if(numJugadores < cantMaximaJugadores){
-            arbol[tam-1-numJugadores] = jugador;
-            numJugadores ++; 
+        int contNumJugadores = 0; 
+        if(contNumJugadores < cantMaxJugadores){
+            arbol[tam-1-contNumJugadores] = jugador;
+            contNumJugadores ++; 
         }else{
             System.out.println("No se pueden insertar mas jugadores");
         }
@@ -53,10 +52,45 @@ public class ArbolBinario {
         }
     }
     
-    private void preorderHelper(int i, ) {
-        if (i < arbol.length && arbol[i] != -1) {
-            preorderHelper(i * 2 + 1, listaOrdenada);
-            preorderHelper(i * 2 + 2, listaOrdenada);
+    // subirDesdeIzq = (i-1)/2;
+    // subirDesdeDer = (i-2)/2;
+    // 0 -> i * 2 + 1
+    // 1 -> i * 2 + 2 
+    
+    public void asignarJugadorGanador(String nombre, String apellido){
+        boolean ladoIzq = false;
+        boolean jugadorEncontrado = false;
+        // For que recorre cada hoja
+        for (int i = 0; i < cantMaxJugadores; i++) {
+            int pos = 0;
+            // Transformo el numero de hoja que quiero llegar a binario para recorrer el arbol hasta llegar ahí
+            String numBinarios = String.format("%" + (nivelActualArbol) + "s", Integer.toBinaryString(i)).replace(' ', '0');
+            // Los 0 son un movimiento a la Izquierda y los 1 a la derecha
+            for (int j = 0; j < nivelActualArbol; j++) {
+                char n = numBinarios.charAt(j);
+                if (n == '0') {
+                    pos = pos * 2 + 1;
+                    ladoIzq = true;
+                }else{
+                    pos = pos * 2 + 2;
+                    ladoIzq = false;
+                }  
+            }
+            Jugador jug = arbol[pos];
+            // verifico si es el jugador que estoy buscando y si se encuentra en la ronda actual o ya ha pasado a la siguiente
+            if (jug.getNombre().equals(nombre) && jug.getApellido().equals(apellido) && jug.getNivelActual() == nivelActualArbol) {
+                jugadorEncontrado = true;
+                if (ladoIzq == true) {
+                    arbol[(i-1)/2].setNombre(nombre);
+                    arbol[(i-1/2)].setApellido(apellido);
+                }else{
+                    arbol[(i-2)/2].setNombre(nombre);
+                    arbol[(i-2)/2].setApellido(apellido);
+                }
+            }
+        }
+        if (jugadorEncontrado) {
+            System.out.println("Se ha asignado como ganador al jugador: " + nombre + " " + apellido + ", en la ronda: " + (numRondas-nivelActualArbol+1));
         }
     }
     
@@ -66,7 +100,9 @@ public class ArbolBinario {
         }
     }
     
-    public void imprimirArbol(){
+    public void imprimirRonda(int ronda){
+        System.out.println("PARTIDOS DE LA RONDA: " + ronda);
+        System.out.println("* * * * * * * * * * * * ");
         
     }
 }

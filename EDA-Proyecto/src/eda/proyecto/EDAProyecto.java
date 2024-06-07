@@ -14,12 +14,13 @@ public class EDAProyecto {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        ArbolBinario torneo = new ArbolBinario(2);
+        int numRondas = 2;
+        ArbolBinario torneo = new ArbolBinario(numRondas);
         
-        Jugador jugador1 = new Jugador("a","a");
-        Jugador jugador2 = new Jugador("b","b");
-        Jugador jugador3 = new Jugador("c","c");
-        Jugador jugador4 = new Jugador("d","d");
+        Jugador jugador1 = new Jugador("a","a",numRondas);
+        Jugador jugador2 = new Jugador("b","b",numRondas);
+        Jugador jugador3 = new Jugador("c","c",numRondas);
+        Jugador jugador4 = new Jugador("d","d",numRondas);
       
         torneo.insertarJugador(jugador1);
         torneo.insertarJugador(jugador2);
