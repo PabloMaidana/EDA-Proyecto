@@ -21,13 +21,14 @@ public class EDAProyecto {
         Jugador jugador2 = new Jugador("b","b",numRondas);
         Jugador jugador3 = new Jugador("c","c",numRondas);
         Jugador jugador4 = new Jugador("d","d",numRondas);
-      
+        
         torneo.insertarJugador(jugador1);
         torneo.insertarJugador(jugador2);
         torneo.insertarJugador(jugador3);
         torneo.insertarJugador(jugador4);
         
-        torneo.abrirMenu();
+        torneo.controlRondas();
+
         
         
     }

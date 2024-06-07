@@ -11,15 +11,24 @@ package eda.proyecto;
 public class Jugador {
     String nombre;
     String apellido;
-    boolean estado = true;
+    boolean estado;
     int nivelActual;
 
     public Jugador(String nombre, String apellido,int nivelActual) {
         this.nombre = nombre;
         this.apellido = apellido;
         this.nivelActual = nivelActual;
+        this.estado = true;
     }
 
+    public boolean isEstado() {
+        return estado;
+    }
+
+    public void setEstado(boolean estado) {
+        this.estado = estado;
+    }
+    
     public int getNivelActual() {
         return nivelActual;
     }

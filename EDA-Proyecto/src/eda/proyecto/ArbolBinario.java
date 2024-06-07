@@ -17,6 +17,7 @@ public class ArbolBinario {
     int cantMaxJugadores;
     int nivelActualArbol;
     int partidosActivos;
+    int contNumJugadores = 0;
     
     public ArbolBinario(int nRondas) {
         this.numRondas = nRondas;
@@ -31,7 +32,6 @@ public class ArbolBinario {
     }
 
     public void insertarJugador(Jugador jugador){
-        int contNumJugadores = 0; 
         if(contNumJugadores < cantMaxJugadores){
             arbol[tam-1-contNumJugadores] = jugador;
             contNumJugadores ++; 
@@ -43,22 +43,25 @@ public class ArbolBinario {
     public void controlRondas(){
         int rondaAct;
         Scanner scanner = new Scanner(System.in);
-        String ganador;
-        for (int i = 0; i < numRondas; i++) {
+        for (int i = 0; i < numRondas+1; i++) {
             rondaAct = i +1;
+            if (nivelActualArbol == 0) {
+                System.out.println("El ganador del torneo es: " + irHoja(0).getNombre() + " " + irHoja(0).getApellido());
+            }else{
+                System.out.println("Ronda: " + (rondaAct));
+            }
+            while (partidosActivos != 0) {
+                    imprimirRonda(rondaAct); 
+                    System.out.println("Ingrese un ganador");
+                    System.out.print("Nombre: ");
+                    String nombreG = scanner.nextLine();
+                    System.out.print("Apellido: ");
+                    String apellidoG = scanner.nextLine();
+                    asignarJugadorGanador(nombreG,apellidoG); 
+            }
             cantMaxJugadores /= 2;
             partidosActivos = cantMaxJugadores/2;
-            nivelActualArbol --;
-            
-            System.out.println("Ronda: " + (rondaAct));
-            while (partidosActivos != 0) {
-                System.out.println("Ingrese un ganador");
-                String nombreG = scanner.nextLine();
-                String apellidoG = scanner.nextLine();
-                asignarJugadorGanador(nombreG,apellidoG);
-                imprimirRonda(rondaAct);   
-            }
-            
+            nivelActualArbol --; 
         }
     }
     
@@ -67,7 +70,7 @@ public class ArbolBinario {
     // 0 -> i * 2 + 1
     // 1 -> i * 2 + 2 
 
-    public void asignarJugadorGanador(String nombre, String apellido){
+    public boolean asignarJugadorGanador(String nombre, String apellido){
         boolean ladoIzq = false;
         boolean jugadorEncontrado = false;
         // For que recorre cada hoja
@@ -88,19 +91,23 @@ public class ArbolBinario {
             }
             Jugador jug = arbol[pos];
             // verifico si es el jugador que estoy buscando y si se encuentra en la ronda actual o ya ha pasado a la siguiente
-            if (jug.getNombre().equals(nombre) && jug.getApellido().equals(apellido) && jug.getNivelActual() == nivelActualArbol && jug.isEstado() == true) {
+            if (jug.getNombre().equals(nombre) && jug.getApellido().equals(apellido) && jug.getNivelActual() == nivelActualArbol && jug.isEstado()) {
                 jugadorEncontrado = true;
                 jug.nivelActual --;
                 if (ladoIzq == true) {
                     pos = (pos-1)/2;
                     arbol[pos].setNombre(nombre);
                     arbol[pos].setApellido(apellido);
+                    arbol[pos].setEstado(true);
+                    arbol[pos].setNivelActual(nivelActualArbol-1);
                     pos = pos * 2 + 2;
                     arbol[pos].setEstado(false); 
                 }else{
                     pos = (pos-2)/2;
                     arbol[pos].setNombre(nombre);
                     arbol[pos].setApellido(apellido);
+                    arbol[pos].setEstado(true);
+                    arbol[pos].setNivelActual(nivelActualArbol-1);
                     pos = pos * 2 + 1;
                     arbol[pos].setEstado(false);
                 }
@@ -108,8 +115,11 @@ public class ArbolBinario {
         }
         if (jugadorEncontrado) {
             System.out.println("Se ha asignado como ganador al jugador: " + nombre + " " + apellido + ", en la ronda: " + (numRondas-nivelActualArbol+1));
+            partidosActivos --;
+            return true;
         }else{
-            System.out.println("El jugador ingresado no existe o ya jugó");
+            System.out.println("El jugador ingresado no existe o ya jugo");
+            return false;
         }
     }
     
@@ -120,16 +130,13 @@ public class ArbolBinario {
     }
     
     public void imprimirRonda(int rondaActual){
-        int partidosJugados = 0;
         int nivelAux = numRondas-rondaActual+1;
         double cantJugadores = Math.pow(2, nivelAux);
-        System.out.println("PARTIDOS DE LA RONDA: " + rondaActual);
         System.out.println("* * * * * * * * * * * * ");
         for (int i = 0; i < cantJugadores; i++) {
             if (i % 2 == 0) {
                 if (irHoja(i).isEstado() == false || irHoja(i+1).isEstado() == false) {
                     System.out.println("Estado partido: Ya se ha jugado");
-                    partidosJugados ++;
                 }else{
                     System.out.println("Estado partido: Por jugar");
                 }
@@ -137,19 +144,20 @@ public class ArbolBinario {
             } 
         }
         System.out.println("* * * * * * * * * * * * ");
-        partidosActivos -= partidosJugados;
     }
     
     public Jugador irHoja(int nHoja){
         int pos = 0;
-        String numBinarios = String.format("%" + (nivelActualArbol) + "s", Integer.toBinaryString(nHoja)).replace(' ', '0');
-        for (int j = 0; j < nivelActualArbol; j++) {
-            char n = numBinarios.charAt(j);
-            if (n == '0') {
+        if (nivelActualArbol != 0) {
+            String numBinarios = String.format("%" + (nivelActualArbol) + "s", Integer.toBinaryString(nHoja)).replace(' ', '0');
+            for (int j = 0; j < nivelActualArbol; j++) {
+                char n = numBinarios.charAt(j);
+                if (n == '0') {
                 pos = pos * 2 + 1;
-            }else{
+                }else{
                 pos = pos * 2 + 2;
-            }  
+                }  
+            }
         }
         return arbol[pos];
     }
