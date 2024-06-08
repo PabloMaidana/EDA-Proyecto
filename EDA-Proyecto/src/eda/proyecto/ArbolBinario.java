@@ -46,7 +46,7 @@ public class ArbolBinario {
         for (int i = 0; i < numRondas+1; i++) {
             rondaAct = i +1;
             if (nivelActualArbol == 0) {
-                System.out.println("El ganador del torneo es: " + irHoja(0).getNombre() + " " + irHoja(0).getApellido());
+                System.out.println("EL GANADOR DEL TORNEO ES: " + irHoja(0,nivelActualArbol).getNombre() + " " + irHoja(0,nivelActualArbol).getApellido());
             }else{
                 System.out.println("Ronda: " + (rondaAct));
             }
@@ -135,18 +135,18 @@ public class ArbolBinario {
         System.out.println("* * * * * * * * * * * * ");
         for (int i = 0; i < cantJugadores; i++) {
             if (i % 2 == 0) {
-                if (irHoja(i).isEstado() == false || irHoja(i+1).isEstado() == false) {
+                if (irHoja(i,nivelActualArbol).isEstado() == false || irHoja(i+1,nivelActualArbol).isEstado() == false) {
                     System.out.println("Estado partido: Ya se ha jugado");
                 }else{
                     System.out.println("Estado partido: Por jugar");
                 }
-                System.out.println(irHoja(i).getNombre() + " " + irHoja(i).getApellido() + " VS " + irHoja(i+1).getNombre() + irHoja(i+1).getApellido());
+                System.out.println(irHoja(i,nivelActualArbol).getNombre() + " " + irHoja(i,nivelActualArbol).getApellido() + " VS " + irHoja(i+1,nivelActualArbol).getNombre() + " " + irHoja(i+1,nivelActualArbol).getApellido());
             } 
         }
         System.out.println("* * * * * * * * * * * * ");
     }
     
-    public Jugador irHoja(int nHoja){
+    public Jugador irHoja(int nHoja,int nivelActualArbol){
         int pos = 0;
         if (nivelActualArbol != 0) {
             String numBinarios = String.format("%" + (nivelActualArbol) + "s", Integer.toBinaryString(nHoja)).replace(' ', '0');
@@ -160,5 +160,34 @@ public class ArbolBinario {
             }
         }
         return arbol[pos];
+    }
+    
+    public void buscarPartidoResultado(int ronda, String nombre, String apellido){
+        int nivelAux = numRondas-ronda+1;
+        double cantJugadores = Math.pow(2, nivelAux);
+        for (int i = 0; i < cantJugadores; i++) {
+            int pos = 0;
+            if (nivelAux != 0) {
+                String numBinarios = String.format("%" + (nivelAux) + "s", Integer.toBinaryString(i)).replace(' ', '0');
+                for (int j = 0; j < nivelAux; j++) {
+                    char n = numBinarios.charAt(j);
+                    if (n == '0') {
+                    pos = pos * 2 + 1;
+                    }else{
+                    pos = pos * 2 + 2;
+                    }  
+                }
+            }
+            Jugador jug = arbol[pos];
+            if (jug.getNombre().equals(nombre) && jug.getApellido().equals(apellido)) {
+                if (i % 2 == 0) {
+                    System.out.println("El ganador del partido: " + irHoja(i,nivelAux).getNombre() + " " + irHoja(i,nivelAux).getApellido() + " VS " + irHoja(i+1,nivelAux).getNombre() + " " + irHoja(i+1,nivelAux).getApellido());
+                    System.out.println("Fue: " + arbol[(pos-1)/2].getNombre() + " " + arbol[(pos-1)/2].getApellido());
+                }else{
+                    System.out.println("El ganador del partido: " + irHoja(i,nivelAux).getNombre() + " " + irHoja(i,nivelAux).getApellido() + " VS " + irHoja(i-1,nivelAux).getNombre() + " " +irHoja(i-1,nivelAux).getApellido());
+                    System.out.println("Fue: " + arbol[(pos-2)/2].getNombre() + " " + arbol[(pos-2)/2].getApellido());
+                }  
+            }
+        }
     }
 }

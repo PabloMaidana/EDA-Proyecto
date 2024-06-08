@@ -17,10 +17,10 @@ public class EDAProyecto {
         int numRondas = 2;
         ArbolBinario torneo = new ArbolBinario(numRondas);
         
-        Jugador jugador1 = new Jugador("a","a",numRondas);
-        Jugador jugador2 = new Jugador("b","b",numRondas);
-        Jugador jugador3 = new Jugador("c","c",numRondas);
-        Jugador jugador4 = new Jugador("d","d",numRondas);
+        Jugador jugador1 = new Jugador("Carlos","Alcaraz",numRondas);
+        Jugador jugador2 = new Jugador("Casper","Rudd",numRondas);
+        Jugador jugador3 = new Jugador("JuanMartin","DelPotro",numRondas);
+        Jugador jugador4 = new Jugador("Rafa","Nadal",numRondas);
         
         torneo.insertarJugador(jugador1);
         torneo.insertarJugador(jugador2);
@@ -28,9 +28,8 @@ public class EDAProyecto {
         torneo.insertarJugador(jugador4);
         
         torneo.controlRondas();
-
-        
-        
+        torneo.buscarPartidoResultado(1, "Rafa", "Nadal");
+    
     }
     
 }
